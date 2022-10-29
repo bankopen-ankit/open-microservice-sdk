@@ -15,27 +15,27 @@ class AuditService
      * https://github.com/Architectural-Documents/audit-log/blob/main/000-audit-log-service.md#data-definition-m---mandatory-o---optional
      * @var array
      */
-    private $paramKeys = ['product', 'event_source', 'event_type', 'event_action', 'event_data', 'event_created_at'];
+    private array $paramKeys = [
+        'product', 'event_source', 'event_type', 'event_action', 'event_data', 'event_created_at'
+    ];
     /**
      * @var array
      */
-    private $headerKeys = ['Authorization'];
+    private array $headerKeys = ['Authorization'];
 
     /**
      * @param $url
      * @param $parameters
      * @param $headers
-     * @return bool
+     * @return mixed
      * @throws \Exception
      */
-    private function createAudit($url, $parameters, $headers)
+    private function createAudit($url, $parameters, $headers): mixed
     {
         $this->validateKeys($this->paramKeys, $parameters);
         $this->validateKeys($this->headerKeys, $headers);
 
-        $remote = (new RemoteRequest($url, $parameters, $headers))->post();
-
-        return true;
+        return (new RemoteRequest($url, $parameters, $headers))->post();
     }
 
     /**
