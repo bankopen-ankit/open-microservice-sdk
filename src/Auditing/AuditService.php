@@ -35,7 +35,12 @@ class AuditService
         $this->validateKeys($this->paramKeys, $parameters);
         $this->validateKeys($this->headerKeys, $headers);
 
-        return (new RemoteRequest($url, $parameters, $headers))->post();
+        $remote = (new RemoteRequest($url, $parameters, $headers));
+
+        $remote->setConnectTimeout(1);
+        $remote->setTimeout(1);
+
+        return $remote->post();
     }
 
     /**
