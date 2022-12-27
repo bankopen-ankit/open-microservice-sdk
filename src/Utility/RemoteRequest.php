@@ -162,7 +162,7 @@ class RemoteRequest
 
         try {
             $this->response = $client->$method($this->url, $this->baseOptions);
-        } catch (ConnectException | RequestException $e) {
+        } catch (ConnectException|RequestException $e) {
             throw new \Exception($e->getMessage());
         }
 

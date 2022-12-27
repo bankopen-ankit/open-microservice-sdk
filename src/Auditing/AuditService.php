@@ -30,15 +30,15 @@ class AuditService
      * @return mixed
      * @throws \Exception
      */
-    private function createAudit($url, $parameters, $headers): mixed
+    public function createAudit($url, $parameters, $headers, $connectionTimeout = 10, $timeout = 10): mixed
     {
         $this->validateKeys($this->paramKeys, $parameters);
         $this->validateKeys($this->headerKeys, $headers);
 
-        $remote = (new RemoteRequest($url, $parameters, $headers));
-
-        $remote->setConnectTimeout(1);
-        $remote->setTimeout(1);
+        $remote = (new RemoteRequest($url, json_encode($parameters), $headers));
+        $remote->setHeaders($headers);
+        $remote->setTimeout($timeout);
+        $remote->setConnectTimeout($connectionTimeout);
 
         return $remote->post();
     }
@@ -50,12 +50,12 @@ class AuditService
      */
     private function validateKeys($which, $keys)
     {
-        foreach ($keys as $key => $value) {
-            if (in_array($key, $which)) {
-                continue;
-            }
+        $keysProvided = array_keys($keys);
 
-            throw new \Exception($key . ' is missing');
+        foreach ($which as $key) {
+            if ( !in_array($key, $keysProvided)) {
+                throw new \Exception($key . ' is missing');
+            }
         }
     }
 }
